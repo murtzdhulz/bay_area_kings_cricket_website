@@ -1,0 +1,66 @@
+---
+import { Image } from 'astro:assets';
+import calcupLogo from '../assets/brand/calcup-logo-on-dark.svg';
+import { tournamentHref, type Tournament } from '../lib/tournaments';
+
+interface Props {
+  tournament: Tournament;
+}
+const { tournament } = Astro.props;
+const t = tournament.data;
+const href = tournamentHref(tournament);
+const champions = t.outcome === 'champions';
+const Tag = href ? 'a' : 'article';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'card group flex flex-col overflow-hidden transition',
+    href && 'hover:-translate-y-1 hover:border-gold/60',
+    champions && 'border-gold/40',
+  ]}
+>
+  <div class="relative aspect-[16/10] overflow-hidden bg-espresso">
+    {
+      t.image ? (
+        <Image src={t.image} alt={t.imageAlt ?? ''} width={720} class="size-full object-cover transition duration-500 group-hover:scale-105" />
+      ) : t.status === 'hosting' ? (
+        <div class="glow grid size-full place-items-center">
+          <img src={calcupLogo.src} alt="CalCup T10 2027" class="h-3/4 w-auto" />
+        </div>
+      ) : (
+        <div class="grid size-full place-items-center bg-[repeating-linear-gradient(135deg,transparent_0_22px,rgb(221_185_111/0.05)_22px_44px)]">
+          <span class="display text-5xl text-gold/30">{t.location.split(',')[0]}</span>
+        </div>
+      )
+    }
+    <span
+      class:list={[
+        'absolute top-3 left-3 rounded-full px-3 py-1 font-display text-sm font-bold tracking-widest uppercase',
+        champions ? 'bg-gold text-espresso' : 'border border-gold/50 bg-ink/80 text-gold',
+      ]}
+    >
+      {t.result ?? (t.status === 'hosting' ? 'Hosting' : t.participation === 'confirmed' ? 'Confirmed' : 'Planned')}
+    </span>
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <p class="eyebrow !text-xs">{t.location} · {t.date}</p>
+    <h3 class="display mt-2 text-3xl">{t.short}</h3>
+    <p class="mt-1 font-display text-lg tracking-wide text-cream/70 uppercase">{t.name}</p>
+    {t.playedAs && <p class="mt-1 text-sm text-muted">Played as {t.playedAs}</p>}
+    {
+      t.honours.length > 0 && (
+        <ul class="mt-4 space-y-1 text-sm">
+          {t.honours.map((h) => (
+            <li>
+              <span class="text-gold">★ {h.award}</span> <span class="text-cream/80">· {h.player}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <p class="mt-4 flex-1 text-cream/75">{t.summary}</p>
+    {href && <p class="mt-5 font-display font-semibold tracking-widest text-gold uppercase">{t.status === 'hosting' ? 'Go to CalCup →' : 'Read more →'}</p>}
+  </div>
+</Tag>

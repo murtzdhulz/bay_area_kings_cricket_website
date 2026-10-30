@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/kings/logo.png';
+import calcupLogo from '../assets/brand/calcup-logo-on-dark.svg';
+import phizenix from '../assets/brand/phizenix.png';
+import { calcup, club, nav } from '../data/site';
+import { calcupUrl, url } from '../lib/url';
+---
+
+<footer class="mt-24 border-t border-line bg-espresso/60">
+  <div class="wrap grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1.2fr]">
+    <div>
+      <Image src={logo} alt="Bay Area Kings" width={240} class="h-28 w-auto" />
+      <p class="mt-5 max-w-xs text-muted">{club.tagline} Cricket in {club.location}.</p>
+    </div>
+    <div>
+      <p class="eyebrow mb-4">Explore</p>
+      <ul class="space-y-2">
+        {nav.map((item) => <li><a class="text-cream/80 hover:text-gold" href={url(item.href)}>{item.label}</a></li>)}
+        <li><a class="text-cream/80 hover:text-gold" href={url('support/')}>Support us</a></li>
+        <li><a class="text-cream/80 hover:text-gold" href={club.crictrack} target="_blank" rel="noopener noreferrer">Scores on CricTrack ↗</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow mb-4">We’re hosting</p>
+      <a href={calcupUrl()} class="group flex items-center gap-4">
+        <img src={calcupLogo.src} alt="CalCup T10 2027" class="h-20 w-auto" />
+        <span>
+          <span class="block font-display text-2xl font-bold uppercase group-hover:text-gold">{calcup.dates}</span>
+          <span class="block text-muted">{calcup.location}</span>
+        </span>
+      </a>
+      <p class="eyebrow mt-6 mb-3 !text-xs !text-muted">CalCup presented by</p>
+      <img src={phizenix.src} alt="Phizenix" class="h-7 w-auto" />
+    </div>
+  </div>
+  <div class="border-t border-line/60">
+    <div class="wrap py-5 text-sm text-muted">© 2026 Bay Area Kings · Community cricket in the Bay Area</div>
+  </div>
+</footer>

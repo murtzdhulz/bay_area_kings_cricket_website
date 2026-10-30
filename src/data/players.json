@@ -1,0 +1,33 @@
+{
+  "source": "CricTrack public player database",
+  "sourceUrl": "https://cricket-scorer-76028449753.us-west1.run.app/",
+  "retrieved": "2026-10-05",
+  "players": [
+    {"name": "Abdul Kadir Kapadia", "role": "Bowler"},
+    {"name": "Adnan Plumber", "role": "Batsman"},
+    {"name": "Asif Garhi", "role": "Batsman"},
+    {"name": "Aziz Khilawala", "role": "All-rounder"},
+    {"name": "Haider Raja", "role": "Batsman"},
+    {"name": "Hakim Neemuchwala", "role": "Batsman"},
+    {"name": "Hatim Kapda", "role": "Bowler"},
+    {"name": "Hatim Mallu", "role": "Batsman"},
+    {"name": "Husain Ali Ratlamwala", "role": "Bowler"},
+    {"name": "Hussain", "role": "Batsman"},
+    {"name": "Huzaifa Galely", "role": "Batsman"},
+    {"name": "Huzefa Amreliwala", "role": "Batsman"},
+    {"name": "Idrees Mukadam", "role": "Bowler"},
+    {"name": "Khuzem Unchwaniwala", "role": "Batsman"},
+    {"name": "Mansur Motorwala", "role": "Bowler"},
+    {"name": "Mohammed Khambaty", "role": "Bowler"},
+    {"name": "Moiz Sonasath", "role": "All-rounder"},
+    {"name": "Mufaddal Jhaveri", "role": "Batsman"},
+    {"name": "Muffadal Daginawala", "role": "All-rounder"},
+    {"name": "Muffadal Lakdawala", "role": "Bowler"},
+    {"name": "Murtaza Chunnia", "role": "Batsman"},
+    {"name": "Murtaza Partapurwala", "role": "Batsman"},
+    {"name": "Mustafa Motiwala", "role": "Batsman"},
+    {"name": "Mustafa Painter", "role": "Bowler"},
+    {"name": "Mustansir Lokhandwala", "role": "Bowler"},
+    {"name": "Raj Makda", "role": "Bowler"}
+  ]
+}

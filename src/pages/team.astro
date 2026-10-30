@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import roster from '../data/players.json';
+import { club } from '../data/site';
+
+// CricTrack calls batters "Batsman"; we show "Batter" to match the rest of the site.
+const roleLabel = (role: string) => (role === 'Batsman' ? 'Batter' : role);
+const players = roster.players.map((p) => ({ ...p, role: roleLabel(p.role) }));
+const roles = [...new Set(players.map((p) => p.role))].sort();
+const initials = (n: string) =>
+  n
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+const retrieved = new Date(`${roster.retrieved}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+
+<Base title="Team" description="Meet the Bay Area Kings players.">
+  <PageHeader eyebrow={`${players.length} players`} title="Meet the team" intro="The players who make up Bay Area Kings. Names and roles follow our public CricTrack player profiles.">
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <label class="flex items-center gap-3">
+        <span class="sr-only">Search players</span>
+        <input id="player-search" type="search" placeholder="Search by name" autocomplete="off" class="rounded-full border border-line bg-panel px-4 py-2 placeholder:text-muted" />
+      </label>
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
+        {['All', ...roles].map((r, i) => (
+          <button type="button" data-role-filter={r === 'All' ? '' : r} aria-pressed={i === 0 ? 'true' : 'false'} class="rounded-full border border-line px-4 py-2 font-display font-semibold tracking-wider text-cream/80 uppercase aria-pressed:border-gold aria-pressed:bg-gold/15 aria-pressed:text-gold">
+            {r === 'All' ? 'All' : `${r}s`}
+          </button>
+        ))}
+      </div>
+      <p id="roster-count" class="ml-auto text-sm text-muted" aria-live="polite">Showing {players.length} players</p>
+    </div>
+  </PageHeader>
+
+  <section class="wrap pt-12">
+    <ul class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {
+        players.map((p) => (
+          <li class="card flex items-center gap-4 p-4" data-player data-name={p.name.toLowerCase()} data-role={p.role}>
+            <span class="grid size-14 shrink-0 place-items-center rounded-full bg-gold/15 font-display text-xl font-bold text-gold ring-2 ring-gold/50">{initials(p.name)}</span>
+            <span class="min-w-0">
+              <span class="block truncate font-display text-xl font-semibold uppercase">{p.name}</span>
+              <span class="text-sm text-muted">{p.role}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+    <p id="roster-empty" class="mt-6 text-muted" hidden>No players match those filters.</p>
+    <p class="mt-10 text-sm text-muted">
+      Source: CricTrack public player database, accessed {retrieved}. Player photos and bios coming soon.
+      <a class="text-gold hover:underline" href={club.crictrack} target="_blank" rel="noopener noreferrer">Stats on CricTrack ↗</a>
+    </p>
+  </section>
+</Base>
+
+<script>
+  const search = document.getElementById('player-search') as HTMLInputElement | null;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-role-filter]');
+  const count = document.getElementById('roster-count');
+  const empty = document.getElementById('roster-empty');
+  let role = '';
+  const apply = () => {
+    const q = (search?.value ?? '').trim().toLowerCase();
+    let shown = 0;
+    document.querySelectorAll<HTMLElement>('[data-player]').forEach((card) => {
+      const match = card.dataset.name!.includes(q) && (!role || card.dataset.role === role);
+      card.hidden = !match;
+      if (match) shown++;
+    });
+    if (count) count.textContent = `Showing ${shown} player${shown === 1 ? '' : 's'}`;
+    if (empty) empty.hidden = shown > 0;
+  };
+  search?.addEventListener('input', apply);
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      role = b.dataset.roleFilter ?? '';
+      buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      apply();
+    }),
+  );
+</script>

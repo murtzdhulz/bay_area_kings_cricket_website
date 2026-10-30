@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import CalcupBanner from '../../components/CalcupBanner.astro';
+import TournamentCard from '../../components/TournamentCard.astro';
+import { club } from '../../data/site';
+import { getTournaments } from '../../lib/tournaments';
+
+const tournaments = await getTournaments();
+const past = tournaments.filter((t) => t.data.status === 'past').toReversed();
+const upcoming = tournaments.filter((t) => t.data.status === 'upcoming');
+const titles = past.filter((t) => t.data.outcome === 'champions').length;
+---
+
+<Base title="Tournaments" description="Tournaments Bay Area Kings has played, is hosting and will play next.">
+  <PageHeader
+    eyebrow={`${past.length} played · ${titles} titles · 1 hosting`}
+    title="Tournaments"
+    intro="Where we’ve played, how we did, and where we’re headed next, including the one we’re hosting."
+  />
+
+  <div class="pt-14"><CalcupBanner /></div>
+
+  <section class="wrap pt-20">
+    <p class="eyebrow">Results</p>
+    <h2 class="display mt-2 text-5xl">Where we’ve played</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {past.map((t) => <TournamentCard tournament={t} />)}
+    </div>
+    <p class="mt-6 text-sm text-muted">
+      Results are team-reported.{" "}
+      <a class="text-gold hover:underline" href={club.crictrack} target="_blank" rel="noopener noreferrer">Community scorecards on CricTrack ↗</a>
+    </p>
+  </section>
+
+  <section class="wrap pt-20">
+    <p class="eyebrow">Next up</p>
+    <h2 class="display mt-2 text-5xl">On the road in 2027</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {upcoming.map((t) => <TournamentCard tournament={t} />)}
+    </div>
+  </section>
+</Base>

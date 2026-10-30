@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import CalcupBanner from '../components/CalcupBanner.astro';
+import TournamentCard from '../components/TournamentCard.astro';
+import logo from '../assets/kings/logo.png';
+import huddle from '../assets/kings/huddle.webp';
+import players from '../data/players.json';
+import { getTournaments } from '../lib/tournaments';
+import { calcupUrl, url } from '../lib/url';
+
+const tournaments = await getTournaments();
+const past = tournaments.filter((t) => t.data.status === 'past');
+
+const facts = [
+  { value: `${players.players.length}`, label: 'Players' },
+  { value: String(past.filter((t) => t.data.outcome === 'champions').length), label: 'Championships' },
+  { value: String(past.length), label: 'Tournaments played' },
+  { value: '1', label: 'Tournament hosted' },
+];
+---
+
+<Base>
+  <!-- Hero -->
+  <section class="glow relative overflow-hidden border-b border-line">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute top-1/2 left-1/2 hidden -translate-x-1/2 sm:block -translate-y-1/2 font-display text-[24vw] leading-none font-extrabold tracking-tight whitespace-nowrap text-cream/[0.04] uppercase select-none lg:text-[16rem]"
+    >
+      Bay Area
+    </div>
+    <div class="wrap relative grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1.2fr_1fr]">
+      <div>
+        <p class="eyebrow">Bay Area Kings · San Jose & Fremont</p>
+        <h1 class="display mt-4 text-6xl sm:text-7xl lg:text-8xl">
+          A small group became a <span class="text-gold">cricket community.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg text-cream/80">
+          From a handful to over 25 passionate players, our weekly nets, fielding drills and practice matches across San Jose and Fremont have built skills and lasting friendships.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={url('journey/')} class="btn-gold">Our journey</a>
+          <a href={url('team/')} class="btn-ghost">Meet the team</a>
+        </div>
+      </div>
+      <Image src={logo} alt="Bay Area Kings crest" width={520} class="mx-auto w-64 drop-shadow-[0_20px_50px_rgba(221,185,111,0.25)] sm:w-80 lg:w-[26rem]" loading="eager" />
+    </div>
+  </section>
+
+  <!-- Quick facts -->
+  <section class="border-b border-line bg-espresso/50">
+    <div class="wrap grid grid-cols-2 divide-line md:grid-cols-4 md:divide-x">
+      {
+        facts.map((f) => (
+          <div class="px-4 py-8 text-center">
+            <p class="display text-5xl text-gold">{f.value}</p>
+            <p class="mt-1 font-display tracking-[0.2em] text-muted uppercase">{f.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <div class="pt-16"><CalcupBanner /></div>
+
+  <!-- Tournament record -->
+  <section class="wrap py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">Tournament record</p>
+        <h2 class="display mt-2 text-5xl">A team with momentum</h2>
+      </div>
+      <a href={url('tournaments/')} class="font-display font-semibold tracking-wider text-gold uppercase hover:underline">All tournaments →</a>
+    </div>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {past.toReversed().map((t) => <TournamentCard tournament={t} />)}
+    </div>
+  </section>
+
+  <!-- Practice -->
+  <section class="border-y border-line bg-espresso/40">
+    <div class="wrap grid items-center gap-10 py-20 md:grid-cols-2">
+      <Image src={huddle} alt="Cricket players joining hands in a team huddle" width={900} class="rounded-2xl border border-line" />
+      <div>
+        <p class="eyebrow">The story behind the trophies</p>
+        <h2 class="display mt-2 text-5xl">Built at practice</h2>
+        <p class="mt-5 text-lg text-cream/75">
+          Weekly nets, fielding drills and practice matches give players room to learn together. The friendships formed in San Jose and Fremont travel with the team to every tournament.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={url('journey/')} class="btn-ghost">Read our journey</a>
+          <a href={url('gallery/')} class="btn-ghost">View the gallery</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming -->
+  <section class="wrap py-20">
+    <p class="eyebrow">Looking ahead</p>
+    <h2 class="display mt-2 text-5xl">2027 on the calendar</h2>
+    <div class="mt-8 divide-y divide-line border-y border-line">
+      {
+        tournaments
+          .filter((t) => t.data.status !== 'past')
+          .map((t) => (
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 py-5">
+              <span class="display w-40 text-2xl text-gold">{t.data.date.replace(/\d+–\d+, /, '')}</span>
+              <span class="flex-1">
+                <span class="block font-display text-2xl font-bold uppercase">{t.data.name}</span>
+                <span class="text-muted">{t.data.location}</span>
+              </span>
+              {t.data.status === 'hosting' ? (
+                <a href={calcupUrl()} class="chip !border-gold !text-gold">Hosting · Details →</a>
+              ) : (
+                <span class:list={['chip', t.data.participation === 'confirmed' && '!border-gold/60 !text-gold']}>
+                  Participation {t.data.participation}
+                </span>
+              )}
+            </div>
+          ))
+      }
+    </div>
+  </section>
+
+  <!-- Support -->
+  <section class="wrap">
+    <div class="glow card grid items-center gap-8 overflow-hidden p-8 sm:p-12 md:grid-cols-[1.4fr_1fr]">
+      <div>
+        <p class="eyebrow">Support the next innings</p>
+        <h2 class="display mt-2 text-5xl">Help keep cricket growing</h2>
+        <p class="mt-4 max-w-lg text-cream/75">
+          Funding support helps with regular practice, player development, equipment and tournament travel.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 md:items-end">
+        <a href={url('support/')} class="btn-gold">Ways to support</a>
+      </div>
+    </div>
+  </section>
+</Base>

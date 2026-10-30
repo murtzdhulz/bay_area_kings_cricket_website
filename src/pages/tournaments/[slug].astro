@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getTournaments, tournamentHref, type Tournament } from '../../lib/tournaments';
+import { url } from '../../lib/url';
+
+// One page per past tournament. CalCup has its own section and upcoming events have no page yet.
+export async function getStaticPaths() {
+  const past = (await getTournaments()).filter((t) => t.data.status === 'past');
+  return past.map((t, i) => ({
+    params: { slug: t.id },
+    props: { tournament: t, prev: past[i - 1], next: past[i + 1] },
+  }));
+}
+
+interface Props {
+  tournament: Tournament;
+  prev?: Tournament;
+  next?: Tournament;
+}
+const { tournament, prev, next } = Astro.props;
+const t = tournament.data;
+const champions = t.outcome === 'champions';
+const facts = [
+  { k: 'When', v: t.date },
+  { k: 'Where', v: t.location },
+  { k: 'Result', v: t.result ?? '—' },
+  ...(t.playedAs ? [{ k: 'Played as', v: t.playedAs }] : []),
+];
+---
+
+<Base title={t.short} description={`${t.name}, ${t.location}, ${t.date}: ${t.result}. ${t.summary}`}>
+  <section class="glow relative overflow-hidden border-b border-line">
+    <div class="wrap relative grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1fr_1.1fr]">
+      <div>
+        <a href={url('tournaments/')} class="font-display text-sm font-semibold tracking-[0.25em] text-cream/70 uppercase hover:text-cream">← All tournaments</a>
+        <p class="eyebrow mt-6">{t.league ?? t.name}</p>
+        <h1 class="display mt-3 text-6xl sm:text-8xl">{t.short}</h1>
+        <p class:list={['mt-5 inline-block rounded-full px-4 py-1.5 font-display text-xl font-bold tracking-widest uppercase', champions ? 'bg-gold text-espresso' : 'border border-gold/60 text-gold']}>
+          {champions && '🏆 '}{t.result}
+        </p>
+        <p class="mt-6 max-w-xl text-lg text-cream/80">{t.summary}</p>
+      </div>
+      {t.image && <Image src={t.image} alt={t.imageAlt ?? ''} width={1100} class="rounded-2xl border border-gold/30 shadow-2xl" loading="eager" />}
+    </div>
+  </section>
+
+  <section class="border-b border-line bg-espresso/50">
+    <dl class="wrap grid grid-cols-2 divide-line md:grid-cols-4 md:divide-x">
+      {
+        facts.map((f) => (
+          <div class="px-4 py-6 text-center">
+            <dt class="eyebrow !text-xs">{f.k}</dt>
+            <dd class="display mt-1 text-2xl sm:text-3xl">{f.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="wrap grid gap-10 pt-14 lg:grid-cols-[1fr_20rem]">
+    <div>
+      <p class="eyebrow">The story</p>
+      <h2 class="display mt-2 text-4xl">How it went</h2>
+      {
+        t.story.length > 0 ? (
+          <div class="mt-6 space-y-5 text-lg text-cream/80">{t.story.map((p) => <p>{p}</p>)}</div>
+        ) : (
+          <div class="mt-6 rounded-2xl border border-dashed border-line p-8 text-muted">
+            <p class="font-display text-xl font-semibold tracking-wide text-cream/80 uppercase">Write-up coming soon</p>
+            <p class="mt-2">
+              Match-by-match highlights, the final, standout performances and what the trip meant to the team. Have a memory or photo from {t.short}? Send it to the team.
+            </p>
+          </div>
+        )
+      }
+      {t.notes.map((n) => <p class="mt-6 text-sm text-muted">{n}</p>)}
+    </div>
+
+    <aside class="card h-fit p-6">
+      <h2 class="display text-3xl">Awards</h2>
+      {
+        t.honours.length ? (
+          <ul class="mt-4 divide-y divide-line">
+            {t.honours.map((h) => (
+              <li class="py-3">
+                <p class="eyebrow !mb-0 !text-xs">{h.award}</p>
+                <p class="font-display text-2xl font-semibold uppercase">{h.player}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="mt-3 text-muted">No individual awards recorded.</p>
+        )
+      }
+    </aside>
+  </section>
+
+  <nav class="wrap mt-16 grid grid-cols-2 gap-4" aria-label="Other tournaments">
+    {
+      prev ? (
+        <a href={tournamentHref(prev)} class="card p-4 hover:border-gold/60">
+          <span class="block text-sm text-muted">← Earlier</span>
+          <span class="display text-2xl">{prev.data.short}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a href={tournamentHref(next)} class="card p-4 text-right hover:border-gold/60">
+          <span class="block text-sm text-muted">Later →</span>
+          <span class="display text-2xl">{next.data.short}</span>
+        </a>
+      )
+    }
+  </nav>
+</Base>

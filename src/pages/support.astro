@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { club } from '../data/site';
+import { calcupUrl, url } from '../lib/url';
+
+const { contact } = club;
+---
+
+<Base title="Support us" description="Sponsorship opportunities and payment information for Bay Area Kings.">
+  <PageHeader
+    eyebrow="Sponsorship"
+    title="Help shape the next innings"
+    intro="We’re looking for support for regular practice, player development, equipment and tournament travel."
+  />
+
+  <section class="wrap grid gap-10 pt-14 lg:grid-cols-[1.2fr_1fr]">
+    <div>
+      <p class="eyebrow">Why support the team</p>
+      <h2 class="display mt-2 text-4xl">Cricket brings people together</h2>
+      <div class="mt-5 space-y-4 text-lg text-cream/75">
+        <p>
+          From a handful to over 25 passionate players, weekly nets, fielding drills and matches across San Jose and Fremont have built skills and friendships. The team has since won championships in Chicago and Houston.
+        </p>
+        <p>
+          We’re exploring a broader Bay Area Dawoodi Bohra cricket association. This is a proposed next step, and support conversations are currently for Bay Area Kings activity.
+        </p>
+        <p>
+          Interested in sponsoring CalCup 2027? <a class="text-gold hover:underline" href={calcupUrl()}>See the tournament</a> and get in touch with the contact on this page.
+        </p>
+      </div>
+      <a href={url('tournaments/')} class="btn-ghost mt-8">See our results</a>
+    </div>
+
+    <div class="card h-fit p-7">
+      <p class="eyebrow">Ways to help</p>
+      <h2 class="display mt-2 text-3xl">Sponsorship levels</h2>
+      <dl class="mt-5 divide-y divide-line border-y border-line">
+        {
+          club.tiers.map((t) => (
+            <div class="flex items-center justify-between py-4">
+              <dt class="font-display text-xl font-semibold uppercase">{t.name}</dt>
+              <dd class="display text-3xl text-gold">{t.amount}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-4 text-sm text-muted">These are suggested contribution levels. No sponsor benefits are promised.</p>
+    </div>
+  </section>
+
+  <section class="wrap grid gap-6 pt-12 md:grid-cols-2">
+    <div class="glow card overflow-hidden p-8">
+      <p class="eyebrow">Payment</p>
+      <h2 class="display mt-2 text-3xl">Pay via Zelle</h2>
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <span id="zelle-id" class="text-xl break-all text-gold">{club.zelle}</span>
+        <button type="button" data-copy-zelle class="btn-ghost !py-1.5 !text-sm">Copy</button>
+      </div>
+      <p id="copy-feedback" class="mt-2 h-5 text-sm text-gold" role="status" aria-live="polite"></p>
+      <p class="mt-2 text-sm text-muted">Confirm the recipient shown in your Zelle app before sending.</p>
+    </div>
+    <div class="card p-8">
+      <p class="eyebrow">Contact</p>
+      <h2 class="display mt-2 text-3xl">{contact.name}</h2>
+      <p class="mt-2 text-cream/75">{contact.credit}</p>
+      <a href={`tel:${contact.tel}`} class="mt-5 inline-block font-display text-2xl font-bold tracking-wide text-gold hover:underline">{contact.phone}</a>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy-zelle]');
+  const feedback = document.getElementById('copy-feedback');
+  btn?.addEventListener('click', async () => {
+    const id = document.getElementById('zelle-id')?.textContent ?? '';
+    try {
+      await navigator.clipboard.writeText(id);
+      if (feedback) feedback.textContent = 'Copied.';
+    } catch {
+      if (feedback) feedback.textContent = 'Couldn’t copy. Select the ID and copy it manually.';
+    }
+  });
+</script>

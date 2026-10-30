@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/kings/logo.png';
+import mark from '../assets/brand/calcup-mark.svg';
+import { calcupNav, nav } from '../data/site';
+import { calcupUrl, url } from '../lib/url';
+
+const path = Astro.url.pathname;
+const inCalcup = path.startsWith(calcupUrl());
+const isActive = (href: string) => (href === '' ? path === url('') : path.startsWith(url(href)));
+const isCalcupActive = (href: string) => (href === '' ? path === calcupUrl() : path.startsWith(calcupUrl(href)));
+---
+
+<header class="sticky top-0 z-40 border-b border-line/70 bg-ink/85 backdrop-blur">
+  <div class="wrap flex h-16 items-center justify-between gap-6">
+    <a href={url('')} class="flex items-center gap-3" aria-label="Bay Area Kings home">
+      <Image src={logo} alt="" width={84} class="h-11 w-auto" />
+      <span class="leading-none">
+        <span class="block font-display text-[0.65rem] font-semibold tracking-[0.35em] text-gold">BAY AREA</span>
+        <span class="block font-display text-2xl font-semibold tracking-[0.18em] text-cream">KINGS</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
+      {
+        nav.map((item) => (
+          <a
+            href={url(item.href)}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class="rounded-full px-4 py-2 font-display text-base font-semibold tracking-wider text-cream/80 uppercase transition hover:text-gold aria-[current=page]:text-gold"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={url('support/')} class="btn-gold ml-2 !px-5 !py-2 !text-base">Support us</a>
+    </nav>
+
+    <details class="group relative lg:hidden">
+      <summary class="flex cursor-pointer list-none items-center gap-2 rounded-full border border-line px-4 py-2 font-display font-semibold tracking-wider uppercase [&::-webkit-details-marker]:hidden">
+        Menu
+        <svg class="size-4 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4Z" /></svg>
+      </summary>
+      <nav class="card absolute right-0 mt-3 flex w-64 flex-col p-2 shadow-2xl" aria-label="Main">
+        {
+          nav.map((item) => (
+            <a
+              href={url(item.href)}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class="rounded-xl px-4 py-3 font-display text-lg font-semibold tracking-wider uppercase hover:bg-white/5 aria-[current=page]:text-gold"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a href={calcupUrl()} class="rounded-xl px-4 py-3 font-display text-lg font-semibold tracking-wider text-gold uppercase hover:bg-white/5">CalCup 2027 →</a>
+        <a href={url('support/')} class="btn-gold mt-2 justify-center">Support us</a>
+      </nav>
+    </details>
+  </div>
+
+  {
+    inCalcup && (
+      <div class="border-t border-gold/25 bg-espresso/90">
+        <div class="wrap flex h-12 items-center gap-4">
+          <a href={calcupUrl()} class="flex shrink-0 items-center gap-2" aria-label="CalCup 2027 overview">
+            <img src={mark.src} alt="" class="h-7 w-auto" />
+            <span class="font-display text-lg font-semibold tracking-[0.18em] text-cream">
+              CALCUP <span class="text-gold">2027</span>
+            </span>
+          </a>
+          <nav class="-mx-1 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto [scrollbar-width:none]" aria-label="CalCup 2027">
+            {calcupNav.map((item) => (
+              <a
+                href={calcupUrl(item.href)}
+                aria-current={isCalcupActive(item.href) ? 'page' : undefined}
+                class="shrink-0 rounded-full px-3 py-1 font-display text-sm font-semibold tracking-wider whitespace-nowrap text-cream/70 uppercase transition hover:text-gold aria-[current=page]:bg-gold/15 aria-[current=page]:text-gold"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <a href={calcupUrl('register/')} class="btn-gold hidden shrink-0 !px-4 !py-1 !text-sm sm:inline-flex">Register</a>
+        </div>
+      </div>
+    )
+  }
+</header>

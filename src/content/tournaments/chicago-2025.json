@@ -1,0 +1,20 @@
+{
+  "name": "Saifee Cricket League · Season 1",
+  "short": "Chicago 2025",
+  "league": "Saifee Cricket League (SCL)",
+  "location": "Chicago, IL",
+  "date": "September 2025",
+  "when": "2025-09",
+  "status": "past",
+  "result": "Champions",
+  "outcome": "champions",
+  "honours": [
+    { "award": "MVP", "player": "Muffaddal Daginawala" },
+    { "award": "Best Bowler", "player": "Muffaddal Daginawala" }
+  ],
+  "summary": "Our first trip out of state, and our first trophy. Bay Area Kings won Season 1 of the Saifee Cricket League in Chicago.",
+  "story": [],
+  "image": "../../assets/kings/chicago-2025.webp",
+  "imageAlt": "Bay Area Kings players gathered with trophies in Chicago",
+  "cutout": "../../assets/kings/chicago-cutout.webp"
+}

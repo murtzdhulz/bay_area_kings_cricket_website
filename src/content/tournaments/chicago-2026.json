@@ -1,0 +1,18 @@
+{
+  "name": "Saifee Cricket League · Season 2",
+  "short": "Chicago 2026",
+  "league": "Saifee Cricket League (SCL)",
+  "location": "Chicago, IL",
+  "date": "September 2026",
+  "when": "2026-09",
+  "status": "past",
+  "result": "Semi-finalists",
+  "outcome": "semifinal",
+  "honours": [{ "award": "Best Bowler", "player": "Abdul Kader Kapadia" }],
+  "summary": "Back in Chicago to defend the title. The Bay Area players reached the Season 2 semi-finals.",
+  "story": [],
+  "notes": ["The Chicago 2026 group photo also includes Bay Area Knights players."],
+  "image": "../../assets/kings/chicago-2026.webp",
+  "imageAlt": "Bay Area Kings and Bay Area Knights players posing together in Chicago",
+  "cutout": "../../assets/kings/chicago-2026-cutout.webp"
+}

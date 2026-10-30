@@ -1,0 +1,40 @@
+---
+import { calcup } from '../data/site';
+
+// Live countdown to CalCup's first ball. `size="sm"` is the compact version for banners.
+interface Props {
+  size?: 'sm' | 'lg';
+}
+const { size = 'lg' } = Astro.props;
+const sm = size === 'sm';
+---
+
+<div data-countdown={calcup.startsAt} class:list={['flex', sm ? 'gap-2' : 'gap-3 sm:gap-5']} aria-label="Countdown to CalCup first ball">
+  {
+    ['days', 'hours', 'mins', 'secs'].map((unit) => (
+      <div class:list={['card', sm ? 'w-16 py-2' : 'w-20 py-3 sm:w-24']}>
+        <p data-unit={unit} class:list={['display text-gold tabular-nums', sm ? 'text-3xl' : 'text-4xl sm:text-5xl']}>--</p>
+        <p class:list={['mt-1 font-display tracking-[0.25em] text-muted uppercase', sm ? 'text-[0.6rem]' : 'text-xs']}>{unit}</p>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-countdown]').forEach((el) => {
+    const start = new Date(el.dataset.countdown!).getTime();
+    const set = (unit: string, n: number) => {
+      const node = el.querySelector(`[data-unit="${unit}"]`);
+      if (node) node.textContent = String(n).padStart(2, '0');
+    };
+    const tick = () => {
+      const ms = Math.max(0, start - Date.now());
+      set('days', Math.floor(ms / 86_400_000));
+      set('hours', Math.floor(ms / 3_600_000) % 24);
+      set('mins', Math.floor(ms / 60_000) % 60);
+      set('secs', Math.floor(ms / 1000) % 60);
+    };
+    tick();
+    setInterval(tick, 1000);
+  });
+</script>

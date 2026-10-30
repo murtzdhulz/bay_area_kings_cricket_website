@@ -1,0 +1,19 @@
+{
+  "name": "Shujaee Premier League · Season 3",
+  "short": "Houston 2026",
+  "league": "Shujaee Premier League (SPL)",
+  "location": "Houston, TX",
+  "date": "April 2026",
+  "when": "2026-04",
+  "status": "past",
+  "result": "Champions",
+  "outcome": "champions",
+  "playedAs": "Taheri Royals",
+  "honours": [{ "award": "Best Bowler", "player": "Muffaddal Daginawala" }],
+  "summary": "A second title in a second city. Playing as Taheri Royals, our players won Season 3 of the Shujaee Premier League in Houston.",
+  "story": [],
+  "notes": ["Bay Area Kings players competed under the Taheri Royals name in Houston."],
+  "image": "../../assets/kings/houston-2026.webp",
+  "imageAlt": "Houston championship group gathered with tournament awards",
+  "cutout": "../../assets/kings/houston-cutout.webp"
+}

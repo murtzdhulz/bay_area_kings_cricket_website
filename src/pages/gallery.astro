@@ -1,0 +1,67 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { gallery } from '../data/gallery';
+
+// A larger copy of each photo for the lightbox.
+const items = await Promise.all(gallery.map(async (g) => ({ ...g, full: (await getImage({ src: g.image, width: 1600 })).src })));
+---
+
+<Base title="Gallery" description="Bay Area Kings moments: championship celebrations and time at practice.">
+  <PageHeader eyebrow="Gallery" title="Moments that made the team" intro="Championship celebrations and the shared work between tournaments. More photos coming." />
+
+  <section class="wrap pt-12">
+    <div class="columns-1 gap-4 sm:columns-2 lg:columns-3">
+      {
+        items.map((g) => (
+          <button
+            type="button"
+            data-gallery-item
+            data-full={g.full}
+            data-alt={g.alt}
+            data-title={g.title}
+            data-caption={g.caption}
+            class="card group mb-4 block w-full break-inside-avoid overflow-hidden text-left transition hover:border-gold/60"
+            aria-label={`Enlarge: ${g.title}`}
+          >
+            <Image src={g.image} alt={g.alt} width={720} class="w-full transition duration-500 group-hover:scale-[1.03]" />
+            <span class="block p-4">
+              <span class="block font-display text-xl font-semibold uppercase">{g.title}</span>
+              <span class="text-sm text-muted">{g.caption}</span>
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </section>
+
+  <dialog id="gallery-dialog" class="m-auto max-h-[92vh] w-[min(92vw,72rem)] overflow-hidden rounded-2xl border border-line bg-panel p-0 text-cream backdrop:bg-black/80">
+    <img id="dialog-image" src="" alt="" class="max-h-[75vh] w-full object-contain" />
+    <div class="flex items-start justify-between gap-4 p-5">
+      <div>
+        <h2 id="dialog-title" class="font-display text-2xl font-semibold uppercase"></h2>
+        <p id="dialog-caption" class="text-muted"></p>
+      </div>
+      <form method="dialog"><button class="btn-ghost !py-2 !text-base">Close</button></form>
+    </div>
+  </dialog>
+</Base>
+
+<script>
+  const dialog = document.getElementById('gallery-dialog') as HTMLDialogElement | null;
+  const img = document.getElementById('dialog-image') as HTMLImageElement | null;
+  document.querySelectorAll<HTMLButtonElement>('[data-gallery-item]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      if (!dialog || !img) return;
+      img.src = btn.dataset.full!;
+      img.alt = btn.dataset.alt!;
+      document.getElementById('dialog-title')!.textContent = btn.dataset.title!;
+      document.getElementById('dialog-caption')!.textContent = btn.dataset.caption!;
+      dialog.showModal();
+    }),
+  );
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+</script>

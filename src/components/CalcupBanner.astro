@@ -1,0 +1,39 @@
+---
+import logo from '../assets/brand/calcup-logo-on-dark.svg';
+import phizenix from '../assets/brand/phizenix.png';
+import Countdown from './Countdown.astro';
+import { calcup } from '../data/site';
+import { calcupUrl } from '../lib/url';
+---
+
+<section class="wrap" aria-labelledby="calcup-banner-title">
+  <div class="glow card relative grid items-center gap-10 overflow-hidden border-gold/40 p-8 sm:p-12 lg:grid-cols-[auto_1fr_auto]">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-6 -bottom-10 font-display text-[9rem] leading-none font-extrabold tracking-tight text-cream/[0.04] uppercase select-none sm:text-[13rem]"
+    >
+      2027
+    </div>
+    <img src={logo.src} alt="CalCup T10 2027" class="mx-auto w-44 sm:w-52" />
+    <div class="relative">
+      <p class="eyebrow">We’re hosting</p>
+      <h2 id="calcup-banner-title" class="display mt-2 text-5xl sm:text-6xl">CalCup 2027</h2>
+      <p class="mt-3 font-display text-2xl font-semibold tracking-wide text-cream uppercase">{calcup.dates} · {calcup.location}</p>
+      <p class="mt-4 max-w-lg text-cream/75">
+        A two-day T10 tournament with teams coming from across the US. {calcup.tagline}
+      </p>
+      <p class="mt-4 text-sm text-gold">Registration closes {calcup.registration.deadline}.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={calcupUrl('register/')} class="btn-gold">Register</a>
+        <a href={calcupUrl()} class="btn-ghost">Explore CalCup</a>
+      </div>
+    </div>
+    <div class="relative flex flex-col items-center gap-5">
+      <Countdown size="sm" />
+      <div class="flex items-center gap-3">
+        <span class="font-display text-xs font-semibold tracking-[0.3em] text-cream/60 uppercase">Presented by</span>
+        <img src={phizenix.src} alt="Phizenix" class="h-5 w-auto" />
+      </div>
+    </div>
+  </div>
+</section>
